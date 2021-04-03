@@ -1,13 +1,32 @@
-mysql:
-  image: mysql
-  ports:
-    - "3306:3306"
-  expose:
-    - "3306"
-  environment:
-    - MYSQL_USER=springuser
-    - MYSQL_PASSWORD=ThePassword
-    - MYSQL_DATABASE=db_example
-    - MYSQL_ROOT_PASSWORD=root
-  volumes:
-    - "./conf.d:/etc/mysql/conf.d:ro"
+version: '3'
+
+services:
+  mysql:
+    build: ./docker/mysql
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    environment:
+      - MYSQL_PASSWORD=fl11tw00d
+      - MYSQL_DATABASE=banque_alimentaire
+      - MYSQL_ROOT_PASSWORD=fl11tw00d
+  #  volumes:
+  #    - "./conf.d:/etc/mysql/conf.d:ro"
+
+  keycloak:
+    build: ./docker/keycloak
+    ports:
+      - "8083:8080"
+    depends_on:
+      - mysql
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+  #    - KEYCLOAK_IMPORT=config/keycloak/realm.json
+      - DB_ADDR=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=keycloak
+      - DB_USER=keycloak
+      - DB_PASSWORD=keycloak
+      - MYSQL_ROOT_PASSWORD=fl11tw00d
