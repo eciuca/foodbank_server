@@ -76,7 +76,7 @@ services:
     depends_on:
       - mysql
     build:
-      context: ./foodbank-keycloak-user-provider/
+      context: ./foodbank-keycloak-user-provider/docker
     ports:
       - "8083:8080"
       - "8443:8443"
