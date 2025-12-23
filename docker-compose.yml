@@ -78,9 +78,11 @@ services:
     build:
       context: ./foodbank-keycloak-user-provider/docker
     ports:
-      - "8083:8080"
+      - "8083:8080"  # Remove after HTTPS works
       - "8443:8443"
       - "8788:8787"
+    volumes:
+      - letsencrypt-certs:/opt/keycloak/certs:ro
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
@@ -89,7 +91,12 @@ services:
       - KEYCLOAK_ADMIN=${KEYCLOAK_USER}
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_PASSWORD}
       - KC_HTTP_RELATIVE_PATH=/auth
+      - KC_HOSTNAME_STRICT=false
+      - KC_HTTP_ENABLED=false
       - KC_HTTPS_PORT=8443
+      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/live/dev.foodbanksit.be/fullchain.pem
+      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/live/dev.foodbanksit.be/privkey.pem
+      - KC_HOSTNAME={SERVER_NAME}
       - DB_VENDOR=h2
       - KEYCLOAK_IMPORT=/import/realm/foodBank-realm.json
       - MYSQL_HOST=mysql
