@@ -9,7 +9,7 @@
         <class>foodbank.it.keycloak.FoodbankCompany</class>
 
         <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
             <!-- Sets the name of the datasource to be the same as the datasource name in quarkus.properties-->
             <property name="hibernate.connection.datasource" value="foodbank-mysql-user-store" />
             <property name="javax.persistence.transactionType" value="JTA"/>
