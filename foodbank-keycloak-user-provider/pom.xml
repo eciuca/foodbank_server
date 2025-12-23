@@ -180,7 +180,7 @@
                             <!-- overwrite! -->
                             <overwrite>true</overwrite>
 
-                            <outputDirectory>${project.parent.basedir}/docker/keycloak/build/providers</outputDirectory>
+                            <outputDirectory>${project.parent.basedir}/foodbankk-keycloak-user-provider/docker/providers</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${project.build.directory}</directory>
