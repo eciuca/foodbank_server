@@ -88,6 +88,7 @@ services:
       - DEBUG=true
       - KEYCLOAK_ADMIN=${KEYCLOAK_USER}
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_PASSWORD}
+      - KC_HTTP_RELATIVE_PATH=/auth
       - DB_VENDOR=h2
       - KEYCLOAK_IMPORT=/import/realm/foodBank-realm.json
       - MYSQL_HOST=mysql
