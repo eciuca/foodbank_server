@@ -7,7 +7,7 @@
     <persistence-unit name="foodbank-mysql-user-provider">
         <jta-data-source>java:jboss/datasources/FoodBankDS</jta-data-source>
 
-        <class>foodbank.it.keycloak.UserEntity</class>
+        <class>foodbank.it.keycloak.FoodbankUser</class>
 
         <properties>
             <property name="hibernate.hbm2ddl.auto" value="none" />
