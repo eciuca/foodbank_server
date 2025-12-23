@@ -40,8 +40,13 @@ public class AuditLogin {
             );
 
             String baseUrl = Optional.ofNullable(System.getenv("STOCK_REST_BASE_URL"))
-                .filter(s -> !s.isBlank())
+                .filter(s -> s != null && !s.isEmpty())
                 .orElse(System.getenv("STOCK_REST_FALLBACK_URL"));
+
+            if (baseUrl == null) {
+                return;
+            }
+
             String url = baseUrl.endsWith("/") ? baseUrl + "audits/login" : baseUrl + "/audits/login";
 
             String canonical = AuditLoginDto.canonicalPipes(dto);
@@ -61,7 +66,7 @@ public class AuditLogin {
 
             int code = conn.getResponseCode();
             if (code < 200 || code >= 300) {
-                logger.warn("Audit POST returned status "+code + "to " + url);
+                logger.warn("Audit POST returned status " + code + " to " + url);
             }
         } catch (Exception e) {
             logger.warn("Error while auditing barcode login: " + e.toString());

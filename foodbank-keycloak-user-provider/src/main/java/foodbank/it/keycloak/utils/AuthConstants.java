@@ -18,5 +18,6 @@ public final class AuthConstants {
 
     // Client IDs
     public static final String OLD_APP_CLIENT_ID = "stock-app";
-    public static final String NEW_APP_CLIENT_ID = "frontend";
+    public static final String NEW_APP_CLIENT_ID = "this-keycloak-doesnt-protect-new-app-client";
+    public static final String LEGACY_APP_CLIENT_ID = "frontend"; // this is the same as the client id of new app frontend
 }
