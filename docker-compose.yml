@@ -76,31 +76,33 @@ services:
     depends_on:
       - mysql
     build:
-      context: ./docker/keycloak
-      args:
-        - REDIRECT_URIS=${REDIRECT_URIS}
-        - REDIRECT_URIS_ISIS=${REDIRECT_URIS_ISIS}
-        - FRONTEND_URL=${AUTH_SERVER_BASE_URL_FRONTEND}
-        - SMTP_USER=${SMTP_USER}
-        - SMTP_PASSWORD=${SMTP_PASSWORD}
+      context: ./foodbank-keycloak-user-provider/
     ports:
       - "8083:8080"
       - "8443:8443"
       - "8788:8787"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - DEBUG_PORT=*:8787
       - DEBUG=true
-      - KEYCLOAK_USER=${KEYCLOAK_USER}
-      - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
+      - KEYCLOAK_ADMIN=${KEYCLOAK_USER}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_PASSWORD}
       - DB_VENDOR=h2
-      - KEYCLOAK_IMPORT=/tmp/import/realm/foodbank-realm.json
-      - MYSQL_HOST=${MYSQL_HOST}
-      - MYSQL_PORT=${MYSQL_PORT}
+      - KEYCLOAK_IMPORT=/import/realm/foodBank-realm.json
+      - MYSQL_HOST=mariadb
+      - MYSQL_PORT=3306
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_ADDITIONAL_PARAMS=${MYSQL_ADDITIONAL_PARAMS}
       - JAVA_OPTS_APPEND=-Dkeycloak.userCache.enabled=false
+      - REDIRECT_URIS=${REDIRECT_URIS}
+      - REDIRECT_URIS_ISIS=${REDIRECT_URIS_ISIS}
+      - AUTH_SERVER_BASE_URL=${AUTH_SERVER_BASE_URL}
+      - BARCODE_SECRET=NotNeededInLegacy
+      - OLD_APP_URL=${OLD_APP_URL}
+      - NEW_APP_URL=${NEW_APP_URL}
     networks:
       - foodbank
 
