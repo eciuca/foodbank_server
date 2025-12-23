@@ -701,7 +701,8 @@
         "role_list",
         "roles",
         "profile",
-        "email"
+        "email",
+        "login-method"
       ],
       "optionalClientScopes": [
         "address",
@@ -756,7 +757,8 @@
         "role_list",
         "roles",
         "profile",
-        "email"
+        "email",
+        "login-method"
       ],
       "optionalClientScopes": [
         "address",
@@ -795,7 +797,8 @@
         "role_list",
         "roles",
         "profile",
-        "email"
+        "email",
+        "login-method"
       ],
       "optionalClientScopes": [
         "address",
@@ -834,7 +837,8 @@
         "role_list",
         "roles",
         "profile",
-        "email"
+        "email",
+        "login-method"
       ],
       "optionalClientScopes": [
         "address",
@@ -909,7 +913,8 @@
         "role_list",
         "roles",
         "profile",
-        "email"
+        "email",
+        "login-method"
       ],
       "optionalClientScopes": [
         "address",
@@ -948,7 +953,8 @@
         "role_list",
         "roles",
         "profile",
-        "email"
+        "email",
+        "login-method"
       ],
       "optionalClientScopes": [
         "address",
@@ -1012,7 +1018,8 @@
         "role_list",
         "roles",
         "profile",
-        "email"
+        "email",
+        "login-method"
       ],
       "optionalClientScopes": [
         "address",
@@ -1072,7 +1079,8 @@
         "role_list",
         "roles",
         "profile",
-        "email"
+        "email",
+        "login-method"
       ],
       "optionalClientScopes": [
         "address",
@@ -1566,6 +1574,36 @@
           "config": {}
         }
       ]
+    },
+    {
+      "id": "8e4efe40-2e74-4c4b-b9b1-c218cdd55e70",
+      "name": "login-method",
+      "description": "Exposes login_method from client session note",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "id": "72f2bbb2-8380-470c-8a4e-ec805dac4604",
+          "name": "login_method",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "login_method",
+            "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
+            "lightweight.claim": "false",
+            "access.token.claim": "true",
+            "claim.name": "login_method",
+            "jsonType.label": "String",
+            "access.tokenResponse.claim": "false"
+          }
+        }
+      ]
     }
   ],
   "defaultDefaultClientScopes": [
@@ -1590,25 +1628,15 @@
     "xXSSProtection": "1; mode=block",
     "strictTransportSecurity": "max-age=31536000; includeSubDomains"
   },
-  "smtpServer": {
-    "password": "###SMTP_PASSWORD###",
-    "starttls": "true",
-    "auth": "true",
-    "port": "465",
-    "host": "smtp.gmail.com",
-    "from": "contact@foodbanksit.be",
-    "ssl": "true",
-    "user": "###SMTP_USER###"
-  },
   "loginTheme": "foodbank",
   "accountTheme": "foodbank",
   "adminTheme": "foodbank",
   "emailTheme": "foodbank",
-  "eventsEnabled": false,
+  "eventsEnabled": true,
   "eventsListeners": [
-    "jboss-logging"
+    "jboss-logging", "foodbank-audit"
   ],
-  "enabledEventTypes": [],
+  "enabledEventTypes": ["LOGIN","CLIENT_LOGIN"],
   "adminEventsEnabled": false,
   "adminEventsDetailsEnabled": false,
   "identityProviders": [],
@@ -1790,7 +1818,7 @@
     {
       "id": "ddb8e944-6a67-4fe1-886e-38b61d1d93cf",
       "alias": "Account verification options",
-      "description": "Method with which to verity the existing account",
+      "description": "Method with which to verity the existing account, first check barcode login",
       "providerId": "basic-flow",
       "topLevel": false,
       "builtIn": true,
@@ -1800,14 +1828,14 @@
           "requirement": "ALTERNATIVE",
           "priority": 10,
           "userSetupAllowed": false,
-          "autheticatorFlow": false
+          "authenticatorFlow": false
         },
         {
           "requirement": "ALTERNATIVE",
           "priority": 20,
           "flowAlias": "Verify Existing Account by Re-authentication",
           "userSetupAllowed": false,
-          "autheticatorFlow": true
+          "authenticatorFlow": true
         }
       ]
     },
@@ -2163,16 +2191,26 @@
     {
       "id": "d0f978a4-c3db-4689-8567-edb1de7290ed",
       "alias": "forms",
-      "description": "Username, password, otp and other auth forms.",
+      "description": "Username, password, or barcode, otp and other auth forms.",
       "providerId": "basic-flow",
       "topLevel": false,
       "builtIn": true,
       "authenticationExecutions": [
         {
-          "authenticator": "auth-username-password-form",
+          "authenticator": "uname-pw-or-bcode-authenticator",
+          "requirement": "REQUIRED",
+          "priority": 5,
+          "userSetupAllowed": false,
+          "authenticatorFlow": false,
+          "autheticatorFlow": false
+
+        },
+        {
+          "authenticator": "foodbank-migration-authenticator",
           "requirement": "REQUIRED",
           "priority": 10,
           "userSetupAllowed": false,
+          "authenticatorFlow": false,
           "autheticatorFlow": false
         },
         {
@@ -2180,6 +2218,7 @@
           "priority": 20,
           "flowAlias": "Browser - Conditional OTP",
           "userSetupAllowed": false,
+          "authenticatorFlow": true,
           "autheticatorFlow": true
         }
       ]
@@ -2412,7 +2451,7 @@
     "clientSessionIdleTimeout": "0",
     "clientSessionMaxLifespan": "0",
     "clientOfflineSessionIdleTimeout": "0",
-    "frontendUrl": "###FRONTEND_URL###"
+    "frontendUrl": "###AUTH_SERVER_BASE_URL###"
   },
   "keycloakVersion": "16.1.1",
   "userManagedAccessAllowed": false
