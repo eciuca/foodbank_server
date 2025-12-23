@@ -29,22 +29,22 @@ ENV MYSQL_USER=""
 ENV MYSQL_PASSWORD=""
 ENV MYSQL_DATABASE=""
 
-COPY --chmod=755 entrypoint.sh /
+COPY entrypoint.sh /
 
 USER keycloak
 
 # Copy themes from builder
-COPY --from=builder --chmod=755 /themes/foodbank /opt/keycloak/themes/foodbank
+COPY --from=builder /themes/foodbank /opt/keycloak/themes/foodbank
 # Replace original theme files with local changes
 COPY theme/foodbank /opt/keycloak/themes/foodbank
 
 # Install custom Foodbanks user provider
-COPY target/foodbank-mysql-user-provider.jar /opt/keycloak/providers/
+COPY providers/foodbank-mysql-user-provider.jar /opt/keycloak/providers/
 COPY providers/mysql-connector-java-8.0.23.jar /opt/keycloak/providers/
 COPY quarkus.properties /opt/keycloak/conf/
 
 # Import realm
-COPY realm/ /import/realm/
+COPY realm/* /import/realm/
 
 USER root
 # seems kaniko still isn't ok without this

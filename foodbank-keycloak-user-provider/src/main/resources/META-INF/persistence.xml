@@ -4,15 +4,19 @@
              xsi:schemaLocation="
         http://java.sun.com/xml/ns/persistence
         http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-    <persistence-unit name="foodbank-mysql-user-provider">
-        <jta-data-source>java:jboss/datasources/FoodBankDS</jta-data-source>
-
+    <persistence-unit name="foodbank-mysql-user-store" transaction-type="JTA">
         <class>foodbank.it.keycloak.FoodbankUser</class>
+        <class>foodbank.it.keycloak.FoodbankCompany</class>
 
         <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect" />
+            <!-- Sets the name of the datasource to be the same as the datasource name in quarkus.properties-->
+            <property name="hibernate.connection.datasource" value="foodbank-mysql-user-store" />
+            <property name="javax.persistence.transactionType" value="JTA"/>
             <property name="hibernate.hbm2ddl.auto" value="none" />
             <property name="hibernate.show_sql" value="false" />
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect" />
+            <!--            <property name="hibernate.show_sql" value="true" />-->
+            <!--            <property name="hibernate.format_sql" value="true" /> -->
         </properties>
     </persistence-unit>
 </persistence>
