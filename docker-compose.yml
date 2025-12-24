@@ -98,7 +98,7 @@ services:
       - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/live/dev.foodbanksit.be/privkey.pem
       - KC_HOSTNAME=auth.${SERVER_NAME}
       - DB_VENDOR=h2
-      - KEYCLOAK_IMPORT=/import/realm/foodBank-realm.json
+      - KEYCLOAK_IMPORT=/import/realm/FoodBank-realm.json
       - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
       - MYSQL_USER=${MYSQL_USER}
